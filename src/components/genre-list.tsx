@@ -1,25 +1,37 @@
-import { HStack, Image, List, ListItem, Spinner, Text } from "@chakra-ui/react";
-import useGenres from "../hooks/useGenres";
+import {
+  Button,
+  HStack,
+  Image,
+  List,
+  ListItem,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
+import useGenres, { Genre } from "../hooks/useGenres";
 import getCroppedImageUrl from "../services/image-url";
 import GameCardContainer from "./game-card-container";
 import GameCardSkeleton from "./game-card-skeleton";
 import GenreCardSkeleton from "./genre-card-skeleton";
 import GenreCardContainer from "./genre-card-container";
 
-const GenreList = () => {
+interface Props {
+  onSelectGenre: (genre: Genre) => void;
+}
+
+const GenreList = ({ onSelectGenre }: Props) => {
   const { data, isLoading, error } = useGenres();
-  const genreSkeleton = Array(19).fill(null);
-  if(error) return null;
-//   if (isLoading) return <Spinner />;
+  const genreSkeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+  if (error) return null;
+  //   if (isLoading) return <Spinner />;
 
   return (
     <List>
-        {isLoading &&
-          genreSkeleton.map((skeleton) => (
-            <GenreCardContainer>
-              <GenreCardSkeleton key={skeleton} />
-            </GenreCardContainer>
-          ))}
+      {isLoading &&
+        genreSkeleton.map((skeleton) => (
+          <GenreCardContainer key={skeleton}>
+            <GenreCardSkeleton />
+          </GenreCardContainer>
+        ))}
       {data.map((genre) => (
         <ListItem key={genre.id} paddingY="5px">
           <HStack>
@@ -28,7 +40,13 @@ const GenreList = () => {
               borderRadius={8}
               src={getCroppedImageUrl(genre.image_background)}
             />
-            <Text fontSize="lg">{genre.name}</Text>
+            <Button
+              onClick={() => onSelectGenre(genre)}
+              fontSize="lg"
+              variant="link"
+            >
+              {genre.name}
+            </Button>
           </HStack>
         </ListItem>
       ))}
